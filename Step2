@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps Marker with Info Window</title>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        let map;
+
+        function initMap() {
+            // Create a map centered at a specific location
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 42.6977, lng: 23.3219 }, // Centered around Sofia, Bulgaria
+                zoom: 12
+            });
+
+            // Create markers with specific locations
+            const marker_Busmantsi = new google.maps.Marker({
+                position: { lat: 42.670498543148845, lng: 23.43392135561425 },
+                map: map,
+                title: 'Busmantsi'
+            });
+            const marker_Lulin = new google.maps.Marker({
+                position: { lat: 42.72359086482935, lng: 23.261208282174728 },
+                map: map,
+                title: 'Lulin'
+            });
+
+            // Create info windows for each marker
+            const infoWindow_Busmantsi = new google.maps.InfoWindow({
+                content: '<strong>Busmantsi Information:</strong><br>This is some information about Busmantsi.'
+            });
+
+            const infoWindow_Lulin = new google.maps.InfoWindow({
+                content: '<strong>Lulin Information:</strong><br>This is some information about Lulin.'
+            });
+
+            // Add click event listeners to the markers
+            marker_Busmantsi.addListener('click', function() {
+                // Open the info window for Busmantsi when the marker is clicked
+                infoWindow_Busmantsi.open(map, marker_Busmantsi);
+            });
+
+            marker_Lulin.addListener('click', function() {
+                // Open the info window for Lulin when the marker is clicked
+                infoWindow_Lulin.open(map, marker_Lulin);
+            });
+        }
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiGg4BOFuHrLMlqMUDMUtzyqefUamt1d8&callback=initMap"></script>
+</body>
+</html>
