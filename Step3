@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps Marker with Info Window</title>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <label for="marker-select">Choose a Marker:</label>
+    <select id="marker-select" onchange="updateSelectedMarker()">
+        <option value="busmantsi">Busmantsi</option>
+        <option value="lulin">Lulin</option>
+        <!-- Add more markers as needed -->
+    </select>
+    <br>
+    <label for="info-input">Marker Information:</label>
+    <input type="text" id="info-input" placeholder="Enter information...">
+    <button onclick="updateMarkerInfo()">Update Info</button>
+
+    <script>
+        let map;
+        let markers = {
+            busmantsi: { marker: null, infoWindow: null },
+            lulin: { marker: null, infoWindow: null }
+            // Add more markers as needed
+        };
+
+        let selectedMarker = 'busmantsi';
+
+        function initMap() {
+            // Create a map centered at a specific location
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 42.6977, lng: 23.3219 }, // Centered around Sofia, Bulgaria
+                zoom: 12
+            });
+
+            // Create markers with specific locations and InfoWindows
+            markers.busmantsi.marker = new google.maps.Marker({
+                position: { lat: 42.670498543148845, lng: 23.43392135561425 },
+                map: map,
+                title: 'Busmantsi'
+            });
+            markers.busmantsi.infoWindow = new google.maps.InfoWindow();
+
+            markers.lulin.marker = new google.maps.Marker({
+                position: { lat: 42.72359086482935, lng: 23.261208282174728 },
+                map: map,
+                title: 'Lulin'
+            });
+            markers.lulin.infoWindow = new google.maps.InfoWindow();
+
+            // Initialize the selected marker
+            updateSelectedMarker();
+        }
+
+        function updateSelectedMarker() {
+            selectedMarker = document.getElementById('marker-select').value;
+            document.getElementById('info-input').value = ''; // Clear the info input field
+        }
+
+        function updateMarkerInfo() {
+            const info = document.getElementById('info-input').value;
+            const selectedMarkerObj = markers[selectedMarker];
+
+            if (selectedMarkerObj) {
+                // Update the info window content for the selected marker
+                selectedMarkerObj.infoWindow.setContent(`<strong>${selectedMarker} Information:</strong><br>${info}`);
+                // Open the info window for the selected marker
+                selectedMarkerObj.infoWindow.open(map, selectedMarkerObj.marker);
+            }
+        }
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiGg4BOFuHrLMlqMUDMUtzyqefUamt1d8&callback=initMap"></script>
+</body>
+</html>
