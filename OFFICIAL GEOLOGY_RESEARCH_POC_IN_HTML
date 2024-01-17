@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps Marker with Additional Info</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevents scrolling */
+        }
+
+        #map-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .info-bubble {
+            position: absolute;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        #marker-info {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #additional-info {
+            top: 10px;
+            left: 10px;
+        }
+
+        #close-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        #marker-dropdown {
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        <div id="map"></div>
+        <div id="marker-info" class="info-bubble"></div>
+        <div id="additional-info" class="info-bubble"></div>
+        <div id="marker-dropdown">
+            <strong>Choose a Marker:</strong>
+            <select id="marker-select" onchange="selectMarker()">
+                <option value="busmantsi">Busmantsi</option>
+                <option value="lulin">Lulin</option>
+                <option value="dragalevci">Драгалвци</option>
+                <!-- Add more markers as needed -->
+            </select>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        let markers = {
+            busmantsi: { marker: null, infoWindow: null, pinInfo: "Short information for Busmantsi", additionalInfo: createTableBusmantsi(), position: { lat: 42.670498543148845, lng: 23.43392135561425 } },
+            lulin: { marker: null, infoWindow: null, pinInfo: "Short information for Lulin", additionalInfo: createTableLulin(), position: { lat: 42.72359086482935, lng: 23.261208282174728 } },
+            dragalevci: { marker: null, infoWindow: null, pinInfo: "Драгалевци: 42.625933, 23.303790", additionalInfo: createTableDragalevci(), position: { lat: 42.625933, lng: 23.303790 } }
+            // Add more markers as needed
+        };
+
+        function initMap() {
+            // Create a map centered at a specific location
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 42.6977, lng: 23.3219 }, // Centered around Sofia, Bulgaria
+                zoom: 12
+            });
+
+            // Create markers with specific locations and InfoWindows
+            Object.keys(markers).forEach(markerKey => {
+                const markerObj = markers[markerKey];
+                markerObj.marker = new google.maps.Marker({
+                    position: markerObj.position,
+                    map: map,
+                    title: markerKey
+                });
+                markerObj.infoWindow = new google.maps.InfoWindow({
+                    content: `<div>${markerObj.pinInfo}<br><button onclick="showAdditionalInfo('${markerKey}')">Additional Information</button></div>`
+                });
+                markerObj.marker.addListener('click', () => {
+                    closeAllInfoBubbles();
+                    markerObj.infoWindow.open(map, markerObj.marker);
+                });
+            });
+        }
+
+        function showAdditionalInfo(markerKey) {
+            const selectedMarkerObj = markers[markerKey];
+            const additionalInfoWindow = document.getElementById('additional-info');
+            additionalInfoWindow.innerHTML = selectedMarkerObj.additionalInfo;
+            additionalInfoWindow.innerHTML += `<button id="close-button" onclick="closeInfoBubble('additional-info')">x</button>`;
+            additionalInfoWindow.style.display = 'block';
+        }
+
+        function closeAllInfoBubbles() {
+            const infoBubbles = document.querySelectorAll('.info-bubble');
+            infoBubbles.forEach(bubble => {
+                bubble.style.display = 'none';
+            });
+        }
+
+        function closeInfoBubble(bubbleId) {
+            const bubble = document.getElementById(bubbleId);
+            bubble.style.display = 'none';
+        }
+
+        function selectMarker() {
+            const dropdown = document.getElementById('marker-select');
+            const selectedMarkerKey = dropdown.value;
+            const selectedMarkerObj = markers[selectedMarkerKey];
+
+            if (selectedMarkerObj) {
+                map.setCenter(selectedMarkerObj.position); // Center the map on the selected marker
+                closeAllInfoBubbles();
+                selectedMarkerObj.infoWindow.open(map, selectedMarkerObj.marker);
+            }
+        }
+
+        function createTableBusmantsi() {
+            return `
+                <table border="1">
+                    <!-- Table content for Busmantsi -->
+                </table>
+            `;
+        }
+
+        function createTableLulin() {
+            return `
+                <table border="1">
+                    <!-- Table content for Lulin -->
+                </table>
+            `;
+        }
+
+        function createTableDragalevci() {
+            return `
+                <table border="1">
+                    <tr>
+                <th>No</th>
+                <th>Показатели</th>
+                <th>Символ</th>
+                <th>Мярка</th>
+                <th>Стойност</th>
+            </tr>
+            <tr>
+                <td>1.0</td>
+                <td>Обемна плътност</td>
+                <td>ρn</td>
+                <td>g/cm3</td>
+                <td>1,83</td>
+            </tr>
+            <tr>
+                <td>2.0</td>
+                <td>Обемна плътност на скелета</td>
+                <td>ρd</td>
+                <td>g/cm3</td>
+                <td>1,34</td>
+            </tr>
+            <tr>
+    <td>3.0</td>
+    <td>Специфична плътност</td>
+    <td>ρs</td>
+    <td>g/cm3</td>
+    <td>2,75</td>
+</tr>
+<tr>
+    <td>4.0</td>
+    <td>Водно съдържание</td>
+    <td>Wn</td>
+    <td>%</td>
+    <td>36,40</td>
+</tr>
+<tr>
+    <td>5.0</td>
+    <td>Граница на протичане</td>
+    <td>Wl</td>
+    <td>%</td>
+    <td>63,10</td>
+</tr>
+<tr>
+    <td>6.0</td>
+    <td>Граница на източване</td>
+    <td>Wp</td>
+    <td>%</td>
+    <td>25,70</td>
+</tr>
+<tr>
+    <td>7.0</td>
+    <td>Показател на пластичност</td>
+    <td>Ip</td>
+    <td>%</td>
+    <td>37,40</td>
+</tr>
+<tr>
+    <td>8.0</td>
+    <td>Обем на порите</td>
+    <td>n</td>
+    <td>%</td>
+    <td>51,21</td>
+</tr>
+<tr>
+    <td>9.0</td>
+    <td>Коефициент на порите</td>
+    <td>e</td>
+    <td>-</td>
+    <td>1,050</td>
+</tr>
+<tr>
+    <td>10.0</td>
+    <td>Показател на консистенция</td>
+    <td>Ic</td>
+    <td>-</td>
+    <td>0,71</td>
+</tr>
+<tr>
+    <td>11.0</td>
+    <td>Степен на водонасищане</td>
+    <td>Sr</td>
+    <td>-</td>
+    <td>0,95</td>
+</tr>
+<tr>
+    <td>12.0</td>
+    <td>Ъгъл на вътрешно триене</td>
+    <td>φ</td>
+    <td>°</td>
+    <td>нормативна изчислителна\r1...</td>
+</tr>
+<tr>
+    <td>13.0</td>
+    <td>Кохезия</td>
+    <td>C</td>
+    <td>kPa</td>
+    <td>нормативна изчислителна\r5...</td>
+</tr>
+<tr>
+    <td>14.0</td>
+    <td>Компресионни свойства при вертикален товар 0,...</td>
+    <td>NaN</td>
+    <td>NaN</td>
+    <td>3,32\r3,10\r0,657\r0,983\nспецифично слягане %</td>
+</tr>
+                </table>
+            `;
+        }
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiGg4BOFuHrLMlqMUDMUtzyqefUamt1d8&callback=initMap"></script>
+</body>
+</html>
+
+
+
+
+#############################
+
+There is no information about the tables for Lulin and Busmantsi. This app is solely written in HTML AND JAVASCRIPT. 
+
+NEXT STEP IS TO ADAPT THIS CODE TO NODE.JS
+
