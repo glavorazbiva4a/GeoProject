@@ -49,8 +49,8 @@
             top: 10px;
             right: 60px;
             cursor: pointer;
-            background: #007bff;
-            color: #fff;
+            background: #FFFFFF;
+            color: #000000;
             padding: 8px 16px;
             border-radius: 5px;
             z-index: 1; /* Ensure the Geo Research Locations bar is above the dropdown */
@@ -68,6 +68,26 @@
             z-index: 1; /* Ensure the dropdown is above the map */
         }
 
+        /* Add these styles to your existing CSS */
+
+        #additionalInfo {
+            text-align: center;
+            background-color: #3498db; /* Button background color */
+            color: #fff; /* Button text color */
+            border: none; /* Remove button border */
+            padding: 10px 15px; /* Adjust padding for better appearance */
+            border-radius: 5px; /* Add rounded corners */
+            cursor: pointer;
+        }
+
+#additionalInfo button:hover {
+    background-color: #2980b9; /* Change background color on hover */
+}
+#ShortInformation{
+    text-align: center;
+}
+
+
     </style>
 </head>
 <body>
@@ -77,18 +97,18 @@
         <div id="additional-info" class="info-bubble"></div>
 
         <!-- Geo Research Locations bar -->
-        <div id="geo-research-bar" onclick="toggleMarkerDropdown()">Geo Research Locations</div>
+        <div id="geo-research-bar" onclick="toggleMarkerDropdown()">Геоложки изследвания</div>
 
         <!-- Marker dropdown -->
         <div id="marker-dropdown">
-            <strong>Choose a Marker:</strong>
+            <strong>Изберете локация:</strong>
             <select id="marker-select" onchange="selectMarker()">
-                <option value="busmantsi">Busmantsi</option>
-                <option value="lulin">Lulin</option>
-                <option value="dragalevci">Драгалвци</option>
-                <option value="dragalevci2">Драгалевци</option>
-                <option value="dragalevci3">Драгалевци</option>
-                <option value="dragalevci4">Драгалевци</option>
+                <option value="busmantsi">Бусманци</option>
+                <option value="lulin">Люлин</option>
+                <option value="dragalevci">Драгалвци първа копка</option>
+                <option value="dragalevci2">Драгалевци втора копка</option>
+                <option value="dragalevci3">Драгалевци трета копка</option>
+                <option value="dragalevci4">Драгалевци четвърта копка</option>
                 <!-- Add more markers as needed -->
             </select>
         </div>
@@ -97,12 +117,12 @@
     <script>
         let map;
         let markers = {
-            busmantsi: { marker: null, infoWindow: null, pinInfo: "Short information for Busmantsi", additionalInfo: createTableBusmantsi(), position: { lat: 42.670498543148845, lng: 23.43392135561425 } },
-            lulin: { marker: null, infoWindow: null, pinInfo: "Short information for Lulin", additionalInfo: createTableLulin(), position: { lat: 42.72359086482935, lng: 23.261208282174728 } },
+            busmantsi: { marker: null,id:"ShortInformation", infoWindow: null, pinInfo: "Бусманци: 42.675579, 23.432900", additionalInfo: createTableBusmantsi(), position: { lat: 42.670498543148845, lng: 23.43392135561425 } },
+            lulin: { marker: null, infoWindow: null, pinInfo: "Люлин: 42.716466, 23.253100", additionalInfo: createTableLulin(), position: { lat: 42.72359086482935, lng: 23.261208282174728 } },
             dragalevci: { marker: null, infoWindow: null, pinInfo: "Драгалевци: 42.625933, 23.303790", additionalInfo: createTableDragalevci(), position: { lat: 42.625933, lng: 23.303790 } },
-            dragalevci2: { marker: null, infoWindow: null, pinInfo: "Short information for Драгалвци", additionalInfo: createTableDragalevci2(), position: { lat: 42.62581485188216, lng: 23.303998723697255 } },
-            dragalevci3: { marker: null, infoWindow: null, pinInfo: "Short information for Драгалвци", additionalInfo: createTableDragalevci3(), position: { lat: 42.625929699981974, lng: 23.30416059259273 } },
-            dragalevci4: { marker: null, infoWindow: null, pinInfo: "Short information for Драгалвци", additionalInfo: createTableDragalevci4(), position: { lat: 42.625972236261475, lng: 23.304206840848575 } }
+            dragalevci2: { marker: null, infoWindow: null, pinInfo: "Драгалевци: 42.625921, 23.305760", additionalInfo: createTableDragalevci2(), position: { lat: 42.62581485188216, lng: 23.303998723697255 } },
+            dragalevci3: { marker: null, infoWindow: null, pinInfo: "Драгалевци: 42.655948, 23.307770", additionalInfo: createTableDragalevci3(), position: { lat: 42.625929699981974, lng: 23.30416059259273 } },
+            dragalevci4: { marker: null, infoWindow: null, pinInfo: "Драгалевци: 42.635914, 23.309780", additionalInfo: createTableDragalevci4(), position: { lat: 42.625972236261475, lng: 23.304206840848575 } }
             // Add more markers as needed
         };
 
@@ -122,7 +142,7 @@
                     title: markerKey
                 });
                 markerObj.infoWindow = new google.maps.InfoWindow({
-                    content: `<div>${markerObj.pinInfo}<br><button onclick="showAdditionalInfo('${markerKey}')">Additional Information</button></div>`
+                    content: `<div>${markerObj.pinInfo}<br><button id=additionalInfo onclick="showAdditionalInfo('${markerKey}')">Повече информация</button></div>`
                 });
                 markerObj.marker.addListener('click', () => {
                     closeAllInfoBubbles();
